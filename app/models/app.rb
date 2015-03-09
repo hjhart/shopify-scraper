@@ -2,6 +2,7 @@ require 'open-uri'
 
 class App < ActiveRecord::Base
   validates_presence_of :slug, :name, :review_count
+  has_many :app_reviews
 
   def update_reviews
     number_of_reviews = parsed_html.css('meta[itemprop=reviewCount]').first['content']
@@ -15,7 +16,7 @@ class App < ActiveRecord::Base
     "https://apps.shopify.com/#{slug}?page=#{page}"
   end
 
-  def parsed_html(page)
+  def parsed_html(page=1)
     html = open(review_url(page))
     Nokogiri::HTML(html)
   end

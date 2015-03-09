@@ -31,5 +31,14 @@ class ReviewUpdater
   def self.perform(app_id)
     app = App.find(app_id)
     reviews = ReviewPaginator.perform(app)
+    reviews.each do |review|
+      app.app_reviews.build(
+        review_id: review[:id],
+        published_at: review[:published_date],
+        body: review[:body],
+        rating: review[:rating]
+      )
+    end
+    app.save
   end
 end

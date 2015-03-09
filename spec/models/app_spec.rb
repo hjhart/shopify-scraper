@@ -4,9 +4,10 @@ RSpec.describe App, type: :model do
   it { should validate_presence_of :name }
   it { should validate_presence_of :slug }
   it { should validate_presence_of :review_count }
+  it { should have_many :app_reviews }
 
   describe '#update_reviews' do
-    let!(:app) { App.create(name: 'Wanelo App', slug: 'wanelo', review_count: 20) }
+    let!(:app) { App.create(name: 'Wanelo App', slug: 'wanelo', review_count: 21) }
     context 'when the number of reviews are the same' do
       it 'returns true' do
         VCR.use_cassette("twenty_wanelo_reviews") do
@@ -18,12 +19,12 @@ RSpec.describe App, type: :model do
     end
 
     context 'when the number of reviews are different' do
-      let!(:app) { App.create(name: 'Wanelo App', slug: 'wanelo', review_count: 19) }
+      let!(:app) { App.create(name: 'Wanelo App', slug: 'wanelo', review_count: 20) }
       it 'updates the review count' do
         VCR.use_cassette("twenty_wanelo_reviews") do
           expect {
             app.update_reviews
-          }.to change(app, :review_count).from(19).to(20)
+          }.to change(app, :review_count).from(20).to(21)
         end
       end
 
